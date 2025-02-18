@@ -1,7 +1,6 @@
-from src.widget import mask_account_card
-from src.masks import get_mask_card_number
-from src.masks import get_mask_account
-from src.widget import get_date
+from src.masks import get_mask_account, get_mask_card_number
+from src.widget import get_date, mask_account_card
+
 examples_all = [
     "Maestro 1596837868705199",
     "Счет 64686473678894779589",
@@ -10,7 +9,7 @@ examples_all = [
     "Visa Classic 6831982476737658",
     "Visa Platinum 8990922113665229",
     "Visa Gold 5999414228426353",
-    "Счет 73654108430135874305"
+    "Счет 73654108430135874305",
 ]
 
 examples_cards = [
@@ -21,11 +20,7 @@ examples_cards = [
     "5999414228426353",
 ]
 
-examples_accaunt = [
-    "64686473678894779589",
-    "35383033474447895560",
-    "73654108430135874305"
-]
+examples_accaunt = ["64686473678894779589", "35383033474447895560", "73654108430135874305"]
 
 for example in examples_all:
     print(mask_account_card(example))
