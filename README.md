@@ -20,4 +20,4 @@
 1. Клонировать репозиторий:
 
    ```bash
-   git clone https://github.com/yourusername/project-name.git
+   git@github.com:Kub-mi/SkyPro_Homework.git
