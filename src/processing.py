@@ -7,6 +7,8 @@ def filter_by_state(data: list[dict], state: str = "EXECUTED") -> list[dict]:
     for item in data:
         if item.get("state") == state:
             filtered_by_state.append(item)
+        else:
+            filtered_by_state = "Нет элементов"
     return filtered_by_state
 
 
