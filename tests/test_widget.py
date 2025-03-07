@@ -11,3 +11,12 @@ def test_mask_account_card():
 
 def test_get_date():
     assert get_date('2024-03-11T02:26:18.671407') == '11.03.2024'
+
+@pytest.mark.parametrize('value, expected',[
+    ('2024-03-11T02:26:18.671407','11.03.2024'),
+    ('2024-02-11T02:26:18.671407','11.02.2024'),
+    ('2025-03-11T02:26:18.671407','11.03.2025'),
+])
+def test_get_date_param(value, expected):
+    assert get_date(value) == expected
+    
