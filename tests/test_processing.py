@@ -9,7 +9,7 @@ def test_filter_by_state(exemple_processing, exemple_processing_no_state, exempl
     rigth_exemple_processing_no_type = [{"id": 939719570, "state": "EXECUTED", "date": "2018-06-30T02:08:58.425572"}]
 
     assert filter_by_state(exemple_processing) == right_exemple_processing
-    assert filter_by_state(exemple_processing_no_state) == ["Нет элементов"]
+    assert filter_by_state(exemple_processing_no_state) == {'state': 'Нет элементов'}
     assert filter_by_state(exemple_processing_no_type) == rigth_exemple_processing_no_type
 
 
