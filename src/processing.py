@@ -10,12 +10,14 @@ def filter_by_state(data: list[dict], state: str = "EXECUTED") -> list[dict]:
 
         # Проверяем, что значение state является строкой
         if not isinstance(state_value, str):
-            print(f"Ошибка: значение 'state' должно быть строкой, но получено {type(state_value).__name__} ({state_value})")
+            print(
+                f"Ошибка: значение 'state' должно быть строкой, но получено {type(state_value).__name__} ({state_value})"
+            )
             continue
         if item.get("state") == state:
             filtered_by_state.append(item)
 
-    return filtered_by_state if filtered_by_state else ["Нет элементов"]
+    return filtered_by_state if filtered_by_state else {'state': 'Нет элементов'}
 
 
 def sort_by_date(data: list[dict], descending: bool = True) -> list[dict]:
