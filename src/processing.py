@@ -11,7 +11,8 @@ def filter_by_state(data: list[dict], state: str = "EXECUTED") -> list[dict]:
         # Проверяем, что значение state является строкой
         if not isinstance(state_value, str):
             print(
-                f"Ошибка: значение 'state' должно быть строкой, но получено {type(state_value).__name__} ({state_value})"
+                f"Ошибка: значение 'state' должно быть строкой, но получено "
+                f"{type(state_value).__name__} ({state_value})"
             )
             continue
         if item.get("state") == state:
