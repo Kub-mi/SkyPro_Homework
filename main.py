@@ -56,8 +56,10 @@ print(f"отфильтрованный список без state:\n{filter_by_st
 print(f"отсортрованный список по убыванию:\n{sort_by_date(exemple_processing)}\n")
 print(f"отсортрованный список по возростанию:\n{sort_by_date(exemple_processing, False)}\n")
 
+
 @log(filename="mylog.txt")
 def my_function(x, y):
     return x / y
+
 
 my_function(1, 0)
