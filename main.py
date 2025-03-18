@@ -1,3 +1,4 @@
+from decorators import log
 from src.masks import get_mask_account, get_mask_card_number
 from src.processing import filter_by_state, sort_by_date
 from src.widget import get_date, mask_account_card
@@ -54,3 +55,11 @@ print(f"отфильтрованный список:\n{filter_by_state(exemple_p
 print(f"отфильтрованный список без state:\n{filter_by_state(exemple_processing_no_state)}\n")
 print(f"отсортрованный список по убыванию:\n{sort_by_date(exemple_processing)}\n")
 print(f"отсортрованный список по возростанию:\n{sort_by_date(exemple_processing, False)}\n")
+
+
+@log(filename="mylog.txt")
+def my_function(x, y):
+    return x / y
+
+
+my_function(1, 0)

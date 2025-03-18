@@ -12,6 +12,11 @@
 2. **get_date** - Преобразует дату в формат "ДД.ММ.ГГГГ".
 3. **get_mask_card_number** - Маскирует номер карты, отображая его в формате ХХХ****XXXX.
 4. **get_mask_account** - Маскирует номер счета, отображая его в формате **XXXX.
+5. **filter_by_currency** - Фильтрует транзакции по валюте.
+6. **filter_by_state** - passет в себя несколько функций для маскировки личных данных, таких как номер банковской карты и номер счета, а также для вывода даты в заданном формате.
+7. **transaction_descriptions** - Извлекает описание каждой операции из списка транзакций.
+8. **card_number_generator** - Генерирует номера банковских карт в формате XXXX XXXX XXXX XXXX.
+9. **my_function** - Создана для проверки работы декоратора **log**
 
 ## Установка
 
@@ -21,6 +26,7 @@
 
    ```bash
    git@github.com:Kub-mi/SkyPro_Homework.git
+   ```
 
 # Тестирование функций обработки данных
 
@@ -175,6 +181,35 @@ def test_mask_account():
 
 ---
 
+### 6. Тестирование функций из файла `generators`
+
+#### 1. Тестирование функции `filter_by_currency`
+Функция `filter_by_currency` фильтрует транзакции по валюте.
+
+```python
+def test_filter_by_currency(transactions, transactions_usd):
+    assert list(filter_by_currency(transactions, "USD")) == transactions_usd
+```
+
+#### 2. Тестирование функции `transaction_descriptions`
+Функция `transaction_descriptions` извлекает описание каждой операции.
+
+```python
+def test_transaction_descriptions(transactions, transactions_dis):
+    assert list(transaction_descriptions(transactions)) == transactions_dis
+```
+
+#### 3. Тестирование функции `card_number_generator`
+Функция `card_number_generator` генерирует номера банковских карт в формате XXXX XXXX XXXX XXXX.
+
+```python
+def test_card_number_generator(card_num):
+    assert list(card_number_generator(1999999999999990, 2000000000000000)) == card_num
+```
+
+---
+
 ## Заключение
 Этот набор тестов позволяет убедиться в корректной работе функций обработки данных. Если какой-либо тест не проходит, следует проверить логику работы соответствующей функции.
 
+---
