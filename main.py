@@ -2,6 +2,7 @@ from decorators import log
 from src.masks import get_mask_account, get_mask_card_number
 from src.processing import filter_by_state, sort_by_date
 from src.widget import get_date, mask_account_card
+from utils import json_transformation
 
 examples_all = [
     "Maestro 1596837868705199",
@@ -61,5 +62,7 @@ print(f"отсортрованный список по возростанию:\n
 def my_function(x, y):
     return x / y
 
+my_function(1, 1)
 
-my_function(1, 0)
+transactions = json_transformation("data/operations.json")
+print(transactions)
