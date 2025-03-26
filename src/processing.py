@@ -18,7 +18,7 @@ def filter_by_state(data: list[dict], state: str = "EXECUTED") -> list[dict]:
         if item.get("state") == state:
             filtered_by_state.append(item)
 
-    return filtered_by_state if filtered_by_state else [{'state': 'Нет элементов'}]
+    return filtered_by_state if filtered_by_state else [{"state": "Нет элементов"}]
 
 
 def sort_by_date(data: list[dict], descending: bool = True) -> list[dict]:
