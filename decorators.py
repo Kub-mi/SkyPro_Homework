@@ -30,8 +30,6 @@ def log(filename: Optional[str] = None) -> Callable[[Callable[..., Any]], Callab
                     file.write(message + "\n")
             else:
                 print(message)
-
-
             return result
 
         return wrapper

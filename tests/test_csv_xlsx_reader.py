@@ -2,7 +2,7 @@ from unittest.mock import patch, mock_open
 
 import pandas as pd
 
-from csv_xlsx_reader import csv_reader, exel_reader
+from csv_xlsx_reader import csv_reader, excel_reader
 
 
 @patch("builtins.open", new_callable=mock_open,
@@ -22,13 +22,13 @@ def test_csv_reader(mock_dict_reader, mock_file):
 
 
 @patch("pandas.read_excel")
-def test_exel_reader(mock_read_excel):
+def test_excel_reader(mock_read_excel):
     mock_read_excel.return_value = pd.DataFrame([
         {"date": "2024-01-01", "amount": "150", "category": "Shopping"},
         {"date": "2024-01-03", "amount": "300", "category": "Rent"}
     ])
 
-    result = exel_reader("fake_path.xlsx")
+    result = excel_reader("fake_path.xlsx")
     assert len(result) == 2
     assert result[0]["date"] == "2024-01-01"
     assert result[1]["amount"] == "300"

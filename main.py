@@ -1,6 +1,6 @@
 from typing import Union
 
-from csv_xlsx_reader import csv_reader, exel_reader
+from csv_xlsx_reader import csv_reader, excel_reader
 from decorators import log
 from src.masks import get_mask_account, get_mask_card_number
 from src.processing import filter_by_state, sort_by_date
@@ -80,5 +80,5 @@ trans_csv = csv_reader('data/transactions.csv')
 #     print(row)
 
 print('чтение файла xlsx')
-trans_xlsx = exel_reader('data/transactions_excel.xlsx')
+trans_xlsx = excel_reader('data/transactions_excel.xlsx')
 print(trans_xlsx)
