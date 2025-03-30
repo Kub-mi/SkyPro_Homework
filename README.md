@@ -17,6 +17,8 @@
 7. **transaction_descriptions** - Извлекает описание каждой операции из списка транзакций.
 8. **card_number_generator** - Генерирует номера банковских карт в формате XXXX XXXX XXXX XXXX.
 9. **my_function** - Создана для проверки работы декоратора **log**
+10. **excel_reader** - чтение и преобразование в словарь файла в формате xlsx
+11. **csv_reader** - чтение и преобразование в словарь файла в формате csv
 
 ## Установка
 
@@ -205,6 +207,52 @@ def test_transaction_descriptions(transactions, transactions_dis):
 ```python
 def test_card_number_generator(card_num):
     assert list(card_number_generator(1999999999999990, 2000000000000000)) == card_num
+```
+
+### 7. Тестирование функций из файла `csv_xlsx_reader`
+
+#### 1. Тестируем функцию `csv_reader`
+
+Функция `csv_reader` преобразует файл csv в словарь.
+
+Проверяем корректность преобразования используя mock и patch для подмены объектов и их поведения, чтобы изолировать тестируемый код и избежать зависимостей от внешних ресурсов.
+
+```python
+@patch("builtins.open", new_callable=mock_open,
+       read_data="date;amount;category\n2024-01-01;100;Food\n2024-01-02;200;Transport\n")
+@patch("csv.DictReader")
+def test_csv_reader(mock_dict_reader, mock_file):
+    mock_dict_reader.return_value = [
+        {"date": "2024-01-01", "amount": "100", "category": "Food"},
+        {"date": "2024-01-02", "amount": "200", "category": "Transport"}
+    ]
+
+    result = csv_reader("fake_path.csv")
+    assert len(result) == 2
+    assert result[0]["date"] == "2024-01-01"
+    assert result[1]["category"] == "Transport"
+    mock_file.assert_called_once_with("fake_path.csv", mode="r", encoding="utf-8")
+```
+
+#### 2. Тестируем функцию `excel_reader`
+
+Функция `excel_reader` преобразует файл xlsx в словарь.
+
+Проверяем корректность преобразования используя mock и patch для подмены объектов и их поведения, чтобы изолировать тестируемый код и избежать зависимостей от внешних ресурсов.
+
+```python
+@patch("pandas.read_excel")
+def test_excel_reader(mock_read_excel):
+    mock_read_excel.return_value = pd.DataFrame([
+        {"date": "2024-01-01", "amount": "150", "category": "Shopping"},
+        {"date": "2024-01-03", "amount": "300", "category": "Rent"}
+    ])
+
+    result = excel_reader("fake_path.xlsx")
+    assert len(result) == 2
+    assert result[0]["date"] == "2024-01-01"
+    assert result[1]["amount"] == "300"
+    mock_read_excel.assert_called_once_with("fake_path.xlsx", dtype=str, engine='openpyxl')
 ```
 
 ---
