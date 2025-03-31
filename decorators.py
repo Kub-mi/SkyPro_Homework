@@ -18,6 +18,11 @@ def log(filename: Optional[str] = None) -> Callable[[Callable[..., Any]], Callab
                 message = f"{func.__name__} ok"
             except Exception as e:
                 message = f"{func.__name__} error: {type(e).__name__}. Inputs: {args}, {kwargs}"
+                if filename:
+                    with open(filename, "a") as file:
+                        file.write(message + "\n")
+                else:
+                    print(message)  # Добавляем печать ошибки в консоль
                 raise
 
             if filename:
@@ -25,7 +30,6 @@ def log(filename: Optional[str] = None) -> Callable[[Callable[..., Any]], Callab
                     file.write(message + "\n")
             else:
                 print(message)
-
             return result
 
         return wrapper
