@@ -7,6 +7,3 @@ def filter_by_description(transactions: List[Dict[str, str]], search_query: str)
     pattern = re.compile(re.escape(search_query), re.IGNORECASE)
     result = [transaction for transaction in transactions if pattern.search(transaction.get('description', ''))]
     return result
-
-def count_of_category():
-    pass
