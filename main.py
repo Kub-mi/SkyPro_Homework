@@ -1,5 +1,6 @@
 from typing import Union
 
+from csv_xlsx_reader import csv_reader, excel_reader
 from decorators import log
 from src.masks import get_mask_account, get_mask_card_number
 from src.processing import filter_by_state, sort_by_date
@@ -69,4 +70,15 @@ def my_function(x: Union[int, float], y: Union[int, float]) -> float:
 my_function(1, 1)
 
 transactions = json_transformation("data/operations.json")
-print(transactions)
+# print(transactions)
+
+
+print('чтение файла csv')
+trans_csv = csv_reader('data/transactions.csv')
+# print(trans_csv)
+# for row in trans_csv:
+#     print(row)
+
+print('чтение файла xlsx')
+trans_xlsx = excel_reader('data/transactions_excel.xlsx')
+print(trans_xlsx)
