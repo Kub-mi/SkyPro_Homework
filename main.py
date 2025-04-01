@@ -1,13 +1,14 @@
-from src.filter_trans import filter_by_description
-from src.masks import get_mask_card_number, get_mask_account
-from src.processing import filter_by_state, sort_by_date
-from src.widget import get_date
 from csv_xlsx_reader import csv_reader, excel_reader
 from generators import filter_by_currency
+from src.filter_trans import filter_by_description
+from src.masks import get_mask_account, get_mask_card_number
+from src.processing import filter_by_state, sort_by_date
+from src.widget import get_date
 from utils import json_transformation
 
 
-def main():
+def main() -> None:
+    """Основная функция, которая отвечает за логику программы"""
     print("Привет! Добро пожаловать в программу работы с банковскими транзакциями.")
     while True:
         print("Выберите необходимый пункт меню:")
@@ -39,10 +40,10 @@ def main():
             state = input("Ваш выбор: ").strip().upper()
 
             if state not in ["EXECUTED", "CANCELED", "PENDING"]:
-                print(f"Статус операции \"{state}\" недоступен.")
+                print(f'Статус операции "{state}" недоступен.')
             else:
                 transactions = filter_by_state(transactions, state)
-                print(f"Операции отфильтрованы по статусу \"{state}\".")
+                print(f'Операции отфильтрованы по статусу "{state}".')
                 break
 
         sort_choice = input("Отсортировать операции по дате? Да/Нет: ").strip().lower()
@@ -55,8 +56,9 @@ def main():
         if currency_choice == "да":
             transactions = list(filter_by_currency(transactions, "RUB"))
 
-        search_choice = input(
-            "Отфильтровать список транзакций по определенному слову в описании? Да/Нет: ").strip().lower()
+        search_choice = (
+            input("Отфильтровать список транзакций по определенному слову в описании? Да/Нет: ").strip().lower()
+        )
         if search_choice == "да":
             search_query = input("Введите слово для поиска в описании: ")
             transactions = filter_by_description(transactions, search_query)
@@ -107,8 +109,6 @@ def main():
         if repeat != "да":
             print("Спасибо за использование программы!")
             break
-
-
 
 
 if __name__ == "__main__":
