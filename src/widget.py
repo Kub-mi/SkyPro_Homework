@@ -16,12 +16,17 @@ def mask_account_card(account_card_number: str) -> str:
             f"{account_card_number_list[0]} {account_card_number_list[1]} "
             f"{get_mask_card_number(account_card_number_list[2])}"
         )
+    elif "Discover" in account_card_number_list:
+        return f"{account_card_number_list[0]} {get_mask_card_number(account_card_number_list[1])}"
     # Обработка случая, когда передан неизвестный тип карты/счета
     raise ValueError("Некорректный формат входных данных: не удалось определить тип карты или счета.")
 
 
-def get_date(my_date: str) -> str:
-    """функция вывода даты в фомате ДД.ММ.ГГГГ"""
-    date_obj = datetime.strptime(my_date, "%Y-%m-%dT%H:%M:%S.%f")
-    # Преобразуем в нужный формат
-    return date_obj.strftime("%d.%m.%Y")
+def get_date(my_date: str) -> datetime:
+    """Преобразует строку даты в объект datetime."""
+    try:
+        if my_date.endswith("Z"):  # Убираем 'Z', если присутствует
+            my_date = my_date[:-1]
+        return datetime.strptime(my_date, "%Y-%m-%dT%H:%M:%S")
+    except ValueError:
+        return datetime.strptime(my_date, "%Y-%m-%dT%H:%M:%S.%f")
