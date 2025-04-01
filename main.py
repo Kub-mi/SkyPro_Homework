@@ -1,84 +1,115 @@
-from typing import Union
-
 from csv_xlsx_reader import csv_reader, excel_reader
-from decorators import log
+from generators import filter_by_currency
+from src.filter_trans import filter_by_description
 from src.masks import get_mask_account, get_mask_card_number
 from src.processing import filter_by_state, sort_by_date
-from src.widget import get_date, mask_account_card
+from src.widget import get_date
 from utils import json_transformation
 
-examples_all = [
-    "Maestro 1596837868705199",
-    "Счет 64686473678894779589",
-    "MasterCard 7158300734726758",
-    "Счет 35383033474447895560",
-    "Visa Classic 6831982476737658",
-    "Visa Platinum 8990922113665229",
-    "Visa Gold 5999414228426353",
-    "Счет 73654108430135874305",
-]
 
-examples_cards = [
-    "1596837868705199",
-    "7158300734726758",
-    "6831982476737658",
-    "8990922113665229",
-    "5999414228426353",
-]
+def main() -> None:
+    """Основная функция, которая отвечает за логику программы"""
+    print("Привет! Добро пожаловать в программу работы с банковскими транзакциями.")
+    while True:
+        print("Выберите необходимый пункт меню:")
+        print("1. Получить информацию о транзакциях из JSON-файла")
+        print("2. Получить информацию о транзакциях из CSV-файла")
+        print("3. Получить информацию о транзакциях из XLSX-файла")
+        choice = input("Ваш выбор: ")
 
-examples_accaunt = ["64686473678894779589", "35383033474447895560", "73654108430135874305"]
+        if choice == "1":
+            file_path = input("Введите путь к JSON-файлу: ")
+            transactions = json_transformation(file_path)
+        elif choice == "2":
+            file_path = input("Введите путь к CSV-файлу: ")
+            transactions = csv_reader(file_path)
+        elif choice == "3":
+            file_path = input("Введите путь к XLSX-файлу: ")
+            transactions = excel_reader(file_path)
+        else:
+            print("Неверный выбор. Попробуйте снова.")
+            continue
 
-exemple_processing = [
-    {"id": 41428829, "state": "EXECUTED", "date": "2019-07-03T18:35:29.512364"},
-    {"id": 939719570, "state": "EXECUTED", "date": "2018-06-30T02:08:58.425572"},
-    {"id": 594226727, "state": "CANCELED", "date": "2018-09-12T21:27:25.241689"},
-    {"id": 615064591, "state": "CANCELED", "date": "2018-10-14T08:21:33.419441"},
-]
+        if not transactions:
+            print("Файл не содержит данных или указан неверный путь.")
+            continue
 
-exemple_processing_no_state = [
-    {"id": 41428829, "date": "2019-07-03T18:35:29.512364"},
-    {"id": 939719570, "date": "2018-06-30T02:08:58.425572"},
-    {"id": 594226727, "date": "2018-09-12T21:27:25.241689"},
-    {"id": 615064591, "date": "2018-10-14T08:21:33.419441"},
-]
+        while True:
+            print("Введите статус, по которому необходимо выполнить фильтрацию.")
+            print("Доступные для фильтровки статусы: EXECUTED, CANCELED, PENDING")
+            state = input("Ваш выбор: ").strip().upper()
 
-print("список маски номерка карты и номера счета:\n")
-for example in examples_all:
-    print(mask_account_card(example))
+            if state not in ["EXECUTED", "CANCELED", "PENDING"]:
+                print(f'Статус операции "{state}" недоступен.')
+            else:
+                transactions = filter_by_state(transactions, state)
+                print(f'Операции отфильтрованы по статусу "{state}".')
+                break
 
-print("список маски номерка карты:\n")
-for example_card in examples_cards:
-    print(get_mask_card_number(example_card))
+        sort_choice = input("Отсортировать операции по дате? Да/Нет: ").strip().lower()
+        if sort_choice == "да":
+            order_choice = input("Отсортировать по возрастанию или по убыванию? ").strip().lower()
+            descending = order_choice == "по убыванию"
+            transactions = sort_by_date(transactions, descending)
 
-print("список маски номерка счета:\n")
-for example_accaunt in examples_accaunt:
-    print(get_mask_account(example_accaunt))
+        currency_choice = input("Выводить только рублевые транзакции? Да/Нет: ").strip().lower()
+        if currency_choice == "да":
+            transactions = list(filter_by_currency(transactions, "RUB"))
 
-print(get_date("2024-03-11T02:26:18.671407"))
-print(f"отфильтрованный список:\n{filter_by_state(exemple_processing)}\n")
-print(f"отфильтрованный список без state:\n{filter_by_state(exemple_processing_no_state)}\n")
-print(f"отсортрованный список по убыванию:\n{sort_by_date(exemple_processing)}\n")
-print(f"отсортрованный список по возростанию:\n{sort_by_date(exemple_processing, False)}\n")
+        search_choice = (
+            input("Отфильтровать список транзакций по определенному слову в описании? Да/Нет: ").strip().lower()
+        )
+        if search_choice == "да":
+            search_query = input("Введите слово для поиска в описании: ")
+            transactions = filter_by_description(transactions, search_query)
+
+        print("Распечатываю итоговый список транзакций...")
+        if not transactions:
+            print("Не найдено ни одной транзакции, подходящей под ваши условия фильтрации.")
+        else:
+            print(f"Всего банковских операций в выборке: {len(transactions)}")
+
+            for transaction in transactions:
+                date = get_date(transaction["date"])
+                description = transaction.get("description", "Нет описания")
+                amount = transaction.get("operationAmount", {}).get("amount", "Нет суммы")
+                currency = transaction.get("operationAmount", {}).get("currency", {}).get("code", "Нет валюты")
+                sender = transaction.get("from", "")
+                receiver = transaction.get("to", "")
+
+                sender_masked = sender  # По умолчанию оставляем как есть
+                receiver_masked = receiver
+
+                if sender:
+                    sender_parts = sender.split()
+                    last_part = sender_parts[-1]
+
+                    if last_part.isdigit():
+                        if len(last_part) == 16:
+                            sender_masked = " ".join(sender_parts[:-1]) + " " + get_mask_card_number(last_part)
+                        elif len(last_part) == 20:
+                            sender_masked = " ".join(sender_parts[:-1]) + " " + get_mask_account(last_part)
+
+                if receiver:
+                    receiver_parts = receiver.split()
+                    last_part = receiver_parts[-1]
+
+                    if last_part.isdigit():
+                        if len(last_part) == 16:
+                            receiver_masked = " ".join(receiver_parts[:-1]) + " " + get_mask_card_number(last_part)
+                        elif len(last_part) == 20:
+                            receiver_masked = " ".join(receiver_parts[:-1]) + " " + get_mask_account(last_part)
+
+                print(f"{date} {description}")
+                if sender:
+                    print(f"{sender_masked} -> {receiver_masked}")
+                print(f"Сумма: {amount} {currency}\n")
+
+        repeat = input("Хотите выполнить новую операцию? Да/Нет: ").strip().lower()
+        if repeat != "да":
+            print("Спасибо за использование программы!")
+            break
 
 
-@log(filename="mylog.txt")
-def my_function(x: Union[int, float], y: Union[int, float]) -> float:
-    """Функция проверки декоратора"""
-    return x / y
-
-
-my_function(1, 1)
-
-transactions = json_transformation("data/operations.json")
-# print(transactions)
-
-
-print('чтение файла csv')
-trans_csv = csv_reader('data/transactions.csv')
-# print(trans_csv)
-# for row in trans_csv:
-#     print(row)
-
-print('чтение файла xlsx')
-trans_xlsx = excel_reader('data/transactions_excel.xlsx')
-print(trans_xlsx)
+if __name__ == "__main__":
+    main()
